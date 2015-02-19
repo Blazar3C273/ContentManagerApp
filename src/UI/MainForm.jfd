@@ -1,0 +1,308 @@
+JFDML JFormDesigner: "5.2.1.0.138" Java: "1.8.0_25" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"minimumSize": new java.awt.Dimension( 1116, 683 )
+			"defaultCloseOperation": 3
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "statusPanel"
+				"border": new javax.swing.border.TitledBorder( "" )
+				"minimumSize": new java.awt.Dimension( 21, 20 )
+				"preferredSize": new java.awt.Dimension( 21, 23 )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "statusLabel"
+					"text": "Сервер недоступен"
+					addEvent( new FormEvent( "java.awt.event.ComponentListener", "componentShown", "statusLabelComponentShown", true ) )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "West"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "South"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "menuBarPanel"
+				add( new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
+					name: "menuBar"
+					add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+						name: "menu1"
+						"text": "Файл"
+						add( new FormComponent( "javax.swing.JMenuItem" ) {
+							name: "addINewItem"
+							"text": "Добавить экспонат"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "addItemMenuActionPerformed", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JMenuItem" ) {
+							name: "cloneMenuItem"
+							"text": "Клонировать текущий экспонат"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "cloneMenuItemActionPerformed", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JMenuItem" ) {
+							name: "delCurrentItem"
+							"text": "Удалить текущий экспонат"
+							"enabled": false
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "delCurrentItemActionPerformed", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JMenuItem" ) {
+							name: "saveMenu"
+							"text": "Сохранить все экспонаты"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "saveMenuActionPerformed", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JMenuItem" ) {
+							name: "reloadItems"
+							"text": "Перезагрузить все экспонаты"
+							"enabled": false
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "reloadItemsActionPerformed", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+							name: "separator1"
+						} )
+						add( new FormComponent( "javax.swing.JMenuItem" ) {
+							name: "addCategoryItemMenu"
+							"text": "Добавить категорию"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "addCategoryItemMenuActionPerformed", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JMenuItem" ) {
+							name: "printVIPCodes"
+							"text": "Распечатать VIP коды"
+							"enabled": false
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "printVIPCodesActionPerformed", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+							name: "separator2"
+						} )
+						add( new FormComponent( "javax.swing.JMenuItem" ) {
+							name: "exitMenuItem"
+							"text": "Выход"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "exitMenuItemActionPerformed", true ) )
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+						name: "menu8"
+						"text": "Управление обратной связью"
+						"enabled": false
+					} )
+					add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+						name: "aboutMenu"
+						"text": "О программе"
+						"enabled": false
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aboutMenuActionPerformed", true ) )
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "North"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+				name: "mainPanel"
+				"preferredSize": new java.awt.Dimension( 1100, 600 )
+				"minimumSize": new java.awt.Dimension( 1100, 600 )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+					"axis": 1
+				} ) {
+					name: "itemTreePanel"
+					"minimumSize": new java.awt.Dimension( 250, 600 )
+					"preferredSize": new java.awt.Dimension( 275, 600 )
+					"maximumSize": new java.awt.Dimension( 250, 34267 )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane2"
+						"border": new javax.swing.border.TitledBorder( null, "Дерево экспонатов", 4, 0, null, sfield java.awt.Color black )
+						add( new FormComponent( "javax.swing.JTree" ) {
+							name: "itemTree"
+							"model": new javax.swing.tree.DefaultTreeModel( new javax.swing.tree.DefaultMutableTreeNode {
+								userObject: "root"
+							} )
+							"rootVisible": false
+							"editable": true
+							"dragEnabled": true
+							addEvent( new FormEvent( "javax.swing.event.TreeSelectionListener", "valueChanged", "ItemTreeValueChanged", true ) )
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+						name: "qrPanel"
+						"preferredSize": new java.awt.Dimension( 275, 200 )
+						"border": new javax.swing.border.TitledBorder( null, "QR Код текущего экспоната", 4, 0, null, sfield java.awt.Color black )
+						"maximumSize": new java.awt.Dimension( 275, 250 )
+						"minimumSize": new java.awt.Dimension( 100, 100 )
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "qrPanelMouseClicked", true ) )
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+					"axis": 1
+				} ) {
+					name: "mainItemPanel"
+					"autoscrolls": true
+					"minimumSize": new java.awt.Dimension( 550, 31 )
+					"preferredSize": new java.awt.Dimension( 550, 540 )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "contentTab"
+						"border": new javax.swing.border.EmptyBorder( 5, 5, 5, 5 )
+						"autoscrolls": true
+						"preferredSize": new java.awt.Dimension( 577, 540 )
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+							"axis": 1
+						} ) {
+							name: "itemPanel"
+							"border": new javax.swing.border.EmptyBorder( 2, 2, 2, 2 )
+							"preferredSize": new java.awt.Dimension( 540, 500 )
+							add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+								"axis": 0
+							} ) {
+								name: "panel1"
+								"border": new javax.swing.border.TitledBorder( null, "Краткое название", 4, 0, null, sfield java.awt.Color black )
+								add( new FormComponent( "javax.swing.JTextField" ) {
+									name: "itemNameTextField"
+									"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+									"text": "Выберите экспонат"
+									"maximumSize": new java.awt.Dimension( 2147483647, 37 )
+									"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 3, false )
+									addEvent( new FormEvent( "javax.swing.event.CaretListener", "caretUpdate", "itemNameTextFieldCaretUpdate", true ) )
+								} )
+							} )
+							add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+								"axis": 0
+							} ) {
+								name: "panel2"
+								add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+									"axis": 0
+								} ) {
+									name: "categoryPanel"
+									"border": new javax.swing.border.CompoundBorder( new javax.swing.border.TitledBorder( null, "Категория", 4, 0, null, sfield java.awt.Color black ), &EmptyBorder0 new javax.swing.border.EmptyBorder( 5, 5, 5, 5 ) )
+									"visible": false
+									add( new FormComponent( "javax.swing.JComboBox" ) {
+										name: "categoryComboBox"
+										"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+										"maximumSize": new java.awt.Dimension( 32767, 20 )
+										addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "categoryComboBoxItemStateChanged", true ) )
+									} )
+								} )
+							} )
+							add( new FormContainer( "javax.swing.JToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
+								name: "toolBar1"
+								"floatable": false
+								"rollover": true
+								"autoscrolls": true
+								add( new FormComponent( "javax.swing.JButton" ) {
+									name: "fontMenu"
+									"text": "Шрифт"
+									addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "fontMenuActionPerformed", true ) )
+								} )
+								add( new FormComponent( "javax.swing.JButton" ) {
+									name: "stringShifting"
+									"text": "Перевод строки"
+									addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "stringShiftingActionPerformed", true ) )
+								} )
+								add( new FormComponent( "javax.swing.JButton" ) {
+									name: "paragraph"
+									"text": "Абзац"
+									"enabled": false
+									addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "paragraphActionPerformed", true ) )
+								} )
+								add( new FormComponent( "javax.swing.JButton" ) {
+									name: "insertImg"
+									"text": "Картинка"
+									addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "insertImgActionPerformed", true ) )
+								} )
+								add( new FormComponent( "javax.swing.JButton" ) {
+									name: "aligment"
+									"text": "Выравнивание"
+									"enabled": false
+									addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aligmentActionPerformed", true ) )
+								} )
+								add( new FormComponent( "javax.swing.JButton" ) {
+									name: "viewSourceButton"
+									"text": "Просмотр в тегах"
+									"enabled": false
+									addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "viewSourceButtonActionPerformed", true ) )
+								} )
+							} )
+							add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+								name: "scrollPane1"
+								"border": new javax.swing.border.TitledBorder( null, "Подробное описанеи", 4, 0, null, sfield java.awt.Color black )
+								add( new FormComponent( "javax.swing.JEditorPane" ) {
+									name: "editorPane1"
+									"contentType": "text/html"
+									"text": "\n"
+									auxiliary() {
+										"JavaCodeGenerator.variableGetter": true
+									}
+									addEvent( new FormEvent( "java.beans.PropertyChangeListener", "propertyChange", "editorPane1PropertyChange", true, "text" ) )
+									addEvent( new FormEvent( "javax.swing.event.CaretListener", "caretUpdate", "editorPane1CaretUpdate", true ) )
+								} )
+							} )
+							add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+								"axis": 1
+							} ) {
+								name: "attachPanel"
+								"border": new javax.swing.border.CompoundBorder( new javax.swing.border.TitledBorder( null, "Вложения", 4, 0, null, sfield java.awt.Color black ), #EmptyBorder0 )
+								"preferredSize": new java.awt.Dimension( 300, 171 )
+								add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+									name: "scrollPane3"
+									add( new FormComponent( "javax.swing.JTable" ) {
+										name: "attachmentTabel"
+										"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
+											add( new java.util.Vector {
+												add( null )
+												add( null )
+												add( null )
+												add( null )
+												add( null )
+											} )
+										}, new java.util.Vector {
+											add( "Имя файла" )
+											add( "Краткое название" )
+											add( "Описание" )
+											add( "Тип" )
+											add( "Примечания" )
+										}, new java.util.Vector {
+											add( class java.lang.String )
+											add( class java.lang.String )
+											add( null )
+											add( class java.lang.String )
+											add( class java.lang.String )
+										}, new java.util.Vector {
+											add( false )
+											add( null )
+											add( null )
+											add( false )
+											add( null )
+										}, new java.util.Vector {
+											add( null )
+											add( null )
+											add( null )
+											add( null )
+											add( null )
+										} )
+										addEvent( new FormEvent( "java.beans.PropertyChangeListener", "propertyChange", "attachmentTabelPropertyChange", true ) )
+									} )
+								} )
+								add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+									name: "panel3"
+									add( new FormComponent( "javax.swing.JButton" ) {
+										name: "delFIileButton"
+										"text": "Удалить файл"
+										"horizontalTextPosition": 0
+										addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "delFileButtonActionPerformed", true ) )
+									} )
+									add( new FormComponent( "javax.swing.JButton" ) {
+										name: "addFileButton"
+										"text": "Добавить файл"
+										addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "addFileButtonActionPerformed", true ) )
+									} )
+								} )
+							} )
+						} )
+					} )
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 1100, 590 )
+		} )
+	}
+}
