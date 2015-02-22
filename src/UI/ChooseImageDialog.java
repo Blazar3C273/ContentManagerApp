@@ -7,23 +7,32 @@ package UI;
 import files.Item;
 import files.PictureFile;
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * @author Some Fuu
  */
-public class chooseImage extends JDialog {
-    Item item;
+public class ChooseImageDialog extends JDialog {
 
-    public chooseImage(Frame owner, Item _item) {
+    Item item;
+    int cursorPos;
+
+    public ChooseImageDialog(Frame owner, Item _item, int cursorPosition) {
         super(owner);
+        this.cursorPos = cursorPosition;
         this.item = _item;
         initComponents();
+        try {
+            dialogPane.setBorder(new TitledBorder(""));
+        } catch (RuntimeException e) {
+        }
 
         AbstractListModel<PictureFile> alm = new AbstractListModel<PictureFile>() {
             @Override
@@ -43,19 +52,16 @@ public class chooseImage extends JDialog {
         list1.setModel(alm);
     }
 
-    public chooseImage(Dialog owner) {
-        super(owner);
-        initComponents();
-    }
-
     private void okButtonActionPerformed(ActionEvent e) {
-        //JEditorPane editorPane =((MainForm) getOwner()).getEditorPane1();
-        //"<a href=\\\"view:66e110455c2a93556c9c43514200076a/palette_3v61CcKTPqY8s.png\\\"><img src=\\\"palette_3v61CcKTPqY8s.png\\\" alt=\\\"альтернативный текст\\\">\\
         PictureFile selectedValue = (PictureFile) list1.getSelectedValue();
         String href = "view:" + item.get_id() + "/" + selectedValue.getFilename();
-        String html = "<a href=\"" + href + "\"><img src=\"" + selectedValue.getFilename() + "\"  alt=\"" + selectedValue.getShortName() + "\">";
-        new HTMLEditorKit.InsertHTMLTextAction("insert img", html, HTML.Tag.BODY, HTML.Tag.A).actionPerformed(e);
-        ((MainForm) getOwner()).getEditorPane1().setText(((MainForm) getOwner()).getEditorPane1().getText());
+        String html = "<a href=\"" + href + "\"><img align=\"center\" src=\"" + selectedValue.getFilename() + "\" width=\"100%\" alt=\"" + selectedValue.getShortName() + "\" >";
+        String div = "<div align=\"center\">" + html + "</div>";
+        html = div;
+        ((MainForm) getOwner()).getEditorPane1().setSelectionStart(cursorPos);
+        ((MainForm) getOwner()).getEditorPane1().setSelectionEnd(cursorPos);
+        new HTMLEditorKit.InsertHTMLTextAction("insert img", html, HTML.Tag.BODY, HTML.Tag.DIV).actionPerformed(e);
+        //((MainForm) getOwner()).getEditorPane1().setText(((MainForm) getOwner()).getEditorPane1().getText());
         dispose();
     }
 
@@ -65,7 +71,7 @@ public class chooseImage extends JDialog {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - Some Fuu
+        // Generated using JFormDesigner Evaluation license - Someth Sanders
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         scrollPane1 = new JScrollPane();
@@ -151,7 +157,7 @@ public class chooseImage extends JDialog {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - Some Fuu
+    // Generated using JFormDesigner Evaluation license - Someth Sanders
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JScrollPane scrollPane1;

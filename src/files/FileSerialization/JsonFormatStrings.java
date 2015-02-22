@@ -8,5 +8,9 @@ public interface JsonFormatStrings {
     public static final String ATTACHMENT_TYPE_AUDIO = "Аудио";
     public static final String ATTACHMENT_TYPE_VIDEO = "Видео";
     public static final String ATTACHMENT_TYPE_PICTURE = "Картинка";
-    String NEW_ITEM_DESCRIPTION_TEXT = "Поздравляем с успешным созданием нового экспоната. Введите подробное описание.";
+    String NEW_ITEM_DESCRIPTION_TEXT = "<html>\n" +
+            " <body bgcolor=\"#62AD00\">\n" +
+            "  Поздравляем с успешным созданием нового экспоната. Введите подробное описание.\n" +
+            " </body>\n" +
+            "</html>";
 }

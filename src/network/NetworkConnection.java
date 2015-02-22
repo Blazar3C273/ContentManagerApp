@@ -293,7 +293,7 @@ public class NetworkConnection {
             JSONObject object = (JSONObject) new JSONParser().parse(jsonAnswer);
             JSONArray jsonArray = (JSONArray) object.get("rows");
             for (Object o : jsonArray) {
-                ids.put((String) ((JSONObject) o).get("id"), ((String) ((JSONObject) o).get("value")));
+                ids.put((String) ((JSONObject) o).get("id"), (String.valueOf(((JSONObject) o).get("value"))));
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -6,7 +6,6 @@ package UI;
 
 import PropertiesLoader.PropertiesLoader;
 import files.*;
-import files.FileSerialization.ItemSerializer;
 import files.FileSerialization.JsonFormatStrings;
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
@@ -18,24 +17,25 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.*;
-import javax.swing.filechooser.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.tree.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -47,6 +47,8 @@ import java.util.Map;
 public class MainForm extends JFrame {
     public static final String fileName = "properties.json";
     private static final String DEFAULT_CATEGORY_NAME = "Смени имя категории";
+    public static final int BACKGROUND_COLOR = 0xFF62AD00;
+    public static final String PNG = ".png";
     PropertiesLoader propertiesLoader;
     Item currentItem;
 
@@ -66,12 +68,6 @@ public class MainForm extends JFrame {
         HTMLEditorKit editorKit = new HTMLEditorKit();
         editorPane1.setEditorKitForContentType("text/html", editorKit);
         editorPane1.setContentType("text/html");
-        editorPane1.addCaretListener(new CaretListener() {
-            @Override
-            public void caretUpdate(CaretEvent e) {
-                System.out.println(editorPane1.getText());
-            }
-        });
         itemTree.setTransferHandler(new MyTranferHandler());
         propertiesLoader = new PropertiesLoader(fileName);
         propertiesLoader.loadFromFile();
@@ -121,6 +117,7 @@ public class MainForm extends JFrame {
         itemTree.updateUI();
         statusLabelComponentShown(new ComponentEvent(statusLabel, 5));
     }
+
 
     private void statusLabelComponentShown(ComponentEvent e) {
         if (NetworkConnection.isServerOnline())
@@ -453,7 +450,8 @@ public class MainForm extends JFrame {
     }
 
     private void insertImgActionPerformed(ActionEvent e) {
-        new chooseImage(this, currentItem).setVisible(true);
+        int cursorPosition = editorPane1.getSelectionStart();
+        new ChooseImageDialog(this, currentItem, cursorPosition).setVisible(true);
         editorPane1.setText(editorPane1.getText());
     }
 
@@ -461,15 +459,16 @@ public class MainForm extends JFrame {
         //not working yet
         HTML.Tag tag = HTML.Tag.DIV;
         int start = editorPane1.getSelectionStart(), end = editorPane1.getSelectionEnd();
+        String string = editorPane1.getSelectedText();
         new HTMLEditorKit.CutAction().actionPerformed(e);
 
-        String html = "<" + tag.toString() + " align=\"center\">" + "" + "</" + tag.toString() + ">";
+        String html = "<" + tag.toString() + " align=\"center\">" + string + "</" + tag.toString() + ">";
 
         new HTMLEditorKit.InsertHTMLTextAction("", html, HTML.Tag.BODY, tag).actionPerformed(e);
         editorPane1.setSelectionStart(start);
-        editorPane1.setSelectionEnd(start + 1);
-        new HTMLEditorKit.PasteAction().actionPerformed(e);
-        // new HTMLEditorKit.Action
+        editorPane1.setSelectionEnd(start);
+        //new HTMLEditorKit.PasteAction().actionPerformed(e);
+        //new HTMLEditorKit.Action
         editorPane1.setText(editorPane1.getText());
 
     }
@@ -492,14 +491,14 @@ public class MainForm extends JFrame {
             return;
         }
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("");
+        fileChooser.setDialogTitle("Введите осмысленное имя файла...");
         byte[] file = QRCode.from(currentItem.get_id()).to(ImageType.PNG).withSize(256, 256).stream().toByteArray();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
-        fileChooser.setName(currentItem.getItemName());
+        fileChooser.setName(currentItem.getItemName() + PNG);
         fileChooser.setFileFilter(new FileFilter() {
             @Override
             public boolean accept(File f) {
-                return f.getName().endsWith(".png") && f.canWrite();
+                return (f.getName().endsWith(PNG) && f.canWrite());
             }
 
             @Override
@@ -508,8 +507,14 @@ public class MainForm extends JFrame {
             }
         });
         int userSelection = fileChooser.showSaveDialog(this);
+
+
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File fileToSave = fileChooser.getSelectedFile();
+            if (!fileToSave.getName().endsWith(PNG))
+                fileToSave = new File(fileToSave.getAbsolutePath() + PNG);
+            if (fileToSave.getName().isEmpty() || fileToSave.getName().equals("") || fileChooser.getName() == null)
+                fileToSave = new File(fileToSave.getAbsolutePath() + currentItem.getItemName() + PNG);
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(fileToSave);
                 fileOutputStream.write(file);
@@ -773,14 +778,12 @@ public class MainForm extends JFrame {
                 //======== menu8 ========
                 {
                     menu8.setText("\u0423\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u043e\u0431\u0440\u0430\u0442\u043d\u043e\u0439 \u0441\u0432\u044f\u0437\u044c\u044e");
-                    menu8.setEnabled(false);
                 }
                 menuBar.add(menu8);
 
                 //======== aboutMenu ========
                 {
                     aboutMenu.setText("\u041e \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0435");
-                    aboutMenu.setEnabled(false);
                     aboutMenu.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -942,7 +945,6 @@ public class MainForm extends JFrame {
 
                             //---- paragraph ----
                             paragraph.setText("\u0410\u0431\u0437\u0430\u0446");
-                            paragraph.setEnabled(false);
                             paragraph.addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
@@ -963,7 +965,6 @@ public class MainForm extends JFrame {
 
                             //---- aligment ----
                             aligment.setText("\u0412\u044b\u0440\u0430\u0432\u043d\u0438\u0432\u0430\u043d\u0438\u0435");
-                            aligment.setEnabled(false);
                             aligment.addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
@@ -974,7 +975,6 @@ public class MainForm extends JFrame {
 
                             //---- viewSourceButton ----
                             viewSourceButton.setText("\u041f\u0440\u043e\u0441\u043c\u043e\u0442\u0440 \u0432 \u0442\u0435\u0433\u0430\u0445");
-                            viewSourceButton.setEnabled(false);
                             viewSourceButton.addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
@@ -1034,12 +1034,10 @@ public class MainForm extends JFrame {
                                     boolean[] columnEditable = new boolean[]{
                                             false, true, true, false, true
                                     };
-
                                     @Override
                                     public Class<?> getColumnClass(int columnIndex) {
                                         return columnTypes[columnIndex];
                                     }
-
                                     @Override
                                     public boolean isCellEditable(int rowIndex, int columnIndex) {
                                         return columnEditable[columnIndex];

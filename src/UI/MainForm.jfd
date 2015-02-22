@@ -82,12 +82,10 @@ new FormModel {
 					add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 						name: "menu8"
 						"text": "Управление обратной связью"
-						"enabled": false
 					} )
 					add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 						name: "aboutMenu"
 						"text": "О программе"
-						"enabled": false
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aboutMenuActionPerformed", true ) )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
@@ -198,7 +196,6 @@ new FormModel {
 								add( new FormComponent( "javax.swing.JButton" ) {
 									name: "paragraph"
 									"text": "Абзац"
-									"enabled": false
 									addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "paragraphActionPerformed", true ) )
 								} )
 								add( new FormComponent( "javax.swing.JButton" ) {
@@ -209,13 +206,11 @@ new FormModel {
 								add( new FormComponent( "javax.swing.JButton" ) {
 									name: "aligment"
 									"text": "Выравнивание"
-									"enabled": false
 									addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aligmentActionPerformed", true ) )
 								} )
 								add( new FormComponent( "javax.swing.JButton" ) {
 									name: "viewSourceButton"
 									"text": "Просмотр в тегах"
-									"enabled": false
 									addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "viewSourceButtonActionPerformed", true ) )
 								} )
 							} )
