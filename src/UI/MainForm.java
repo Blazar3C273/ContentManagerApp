@@ -469,7 +469,16 @@ public class MainForm extends JFrame {
             string = "";
         }
         new HTMLEditorKit.CutAction().actionPerformed(e);
-        String html = "<" + tag.toString() + " align=\"center\">" + string + "</" + tag.toString() + ">";
+        String alignType = "center";
+        switch (e.getActionCommand()) {
+            case "align-type-left":
+                alignType = "left";
+                break;
+            case "align-type-just":
+                alignType = "justify";
+                break;
+        }
+        String html = "<" + tag.toString() + " align=\"" + alignType + "\">" + string + "</" + tag.toString() + ">";
         new HTMLEditorKit.InsertHTMLTextAction("", html, HTML.Tag.BODY, tag).actionPerformed(e);
         editorPane1.setSelectionStart(start);
         editorPane1.setSelectionEnd(start);
@@ -546,8 +555,10 @@ public class MainForm extends JFrame {
 //        int fromIndex=0;
 //        while (fromIndex<text.lastIndexOf("<font "))
 //        text.indexOf("<font ",fromIndex);
-
-        currentItem.setText(editorPane1.getText());
+        currentItem.setText(editorPane1.getText().replace("\r", " "));
+        currentItem.setText(editorPane1.getText().replace("\n", " "));
+        currentItem.setText(editorPane1.getText().replace("\n \n", " "));
+        System.out.println("editorPane1 = " + editorPane1.getText());
     }
 
     private void addCategoryItemMenuActionPerformed(ActionEvent e) {
@@ -607,6 +618,14 @@ public class MainForm extends JFrame {
         new FeedbackForm().setVisible(true);
     }
 
+    private void editorPane1KeyReleased(KeyEvent e) {
+        //if backspace or delete is pressed - delete empty tags.
+        if (e.getKeyCode() == 8 || e.getKeyCode() == 46) {
+            editorPane1.setText(currentItem.getText());
+            editorPane1.revalidate();
+        }
+    }
+
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -646,6 +665,7 @@ public class MainForm extends JFrame {
         paragraph = new JButton();
         insertImg = new JButton();
         aligment = new JButton();
+        button3 = new JButton();
         button1 = new JButton();
         button2 = new JButton();
         scrollPane1 = new JScrollPane();
@@ -985,6 +1005,7 @@ public class MainForm extends JFrame {
 
                             //---- aligment ----
                             aligment.setText("\u0412\u044b\u0440\u0430\u0432\u043d\u0438\u0432\u0430\u043d\u0438\u0435");
+                            aligment.setVisible(false);
                             aligment.addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
@@ -993,12 +1014,36 @@ public class MainForm extends JFrame {
                             });
                             toolBar1.add(aligment);
 
+                            //---- button3 ----
+                            button3.setIcon(new ImageIcon("C:\\Users\\Anatoliy\\Documents\\MusemGuideSystem\\MusemGuideSystem\\ContentManagerApp\\src\\align_left.png"));
+                            button3.setActionCommand("align-type-left");
+                            button3.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    aligmentActionPerformed(e);
+                                }
+                            });
+                            toolBar1.add(button3);
+
                             //---- button1 ----
-                            button1.setText("text");
+                            button1.setIcon(new ImageIcon("C:\\Users\\Anatoliy\\Documents\\MusemGuideSystem\\MusemGuideSystem\\ContentManagerApp\\src\\align_center.png"));
+                            button1.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    aligmentActionPerformed(e);
+                                }
+                            });
                             toolBar1.add(button1);
 
                             //---- button2 ----
-                            button2.setText("text");
+                            button2.setIcon(new ImageIcon("C:\\Users\\Anatoliy\\Documents\\MusemGuideSystem\\MusemGuideSystem\\ContentManagerApp\\src\\align_just.png"));
+                            button2.setActionCommand("align-type-just");
+                            button2.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    aligmentActionPerformed(e);
+                                }
+                            });
                             toolBar1.add(button2);
                         }
                         itemPanel.add(toolBar1);
@@ -1009,7 +1054,11 @@ public class MainForm extends JFrame {
 
                             //---- editorPane1 ----
                             editorPane1.setContentType("text/html");
-                            editorPane1.setText("\n");
+                            editorPane1.setText(" ");
+                            editorPane1.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                            editorPane1.setDoubleBuffered(true);
+                            editorPane1.setDragEnabled(true);
+                            editorPane1.setDropMode(DropMode.INSERT);
                             editorPane1.addPropertyChangeListener("text", new PropertyChangeListener() {
                                 @Override
                                 public void propertyChange(PropertyChangeEvent e) {
@@ -1020,6 +1069,12 @@ public class MainForm extends JFrame {
                                 @Override
                                 public void caretUpdate(CaretEvent e) {
                                     editorPane1CaretUpdate(e);
+                                }
+                            });
+                            editorPane1.addKeyListener(new KeyAdapter() {
+                                @Override
+                                public void keyReleased(KeyEvent e) {
+                                    editorPane1KeyReleased(e);
                                 }
                             });
                             scrollPane1.setViewportView(editorPane1);
@@ -1052,12 +1107,10 @@ public class MainForm extends JFrame {
                                     boolean[] columnEditable = new boolean[]{
                                             false, true, true, false, true
                                     };
-
                                     @Override
                                     public Class<?> getColumnClass(int columnIndex) {
                                         return columnTypes[columnIndex];
                                     }
-
                                     @Override
                                     public boolean isCellEditable(int rowIndex, int columnIndex) {
                                         return columnEditable[columnIndex];
@@ -1151,6 +1204,7 @@ public class MainForm extends JFrame {
     private JButton paragraph;
     private JButton insertImg;
     private JButton aligment;
+    private JButton button3;
     private JButton button1;
     private JButton button2;
     private JScrollPane scrollPane1;
