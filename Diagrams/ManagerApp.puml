@@ -1,0 +1,17 @@
+@startuml
+actor: Manager
+Manager->App: Run
+App->App: Create AuthForm
+Manager->App: Input Login/Pass
+App->Server: Ping
+Server->App: Pong
+App->Server: getCookie
+
+alt access granted
+
+    Server->App: cookie
+
+else access denied
+
+end
+@enduml
