@@ -28,6 +28,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
+import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
@@ -38,6 +39,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -47,15 +49,19 @@ import java.util.Map;
  * @author Anatoliy Stepanenko
  */
 public class MainForm extends JFrame {
+
     public static final String fileName = "properties.json";
     private static final String DEFAULT_CATEGORY_NAME = "Смени имя категории";
     public static final int BACKGROUND_COLOR = 0xFF62AD00;
     public static final String PNG = ".png";
+
     PropertiesLoader propertiesLoader;
+
     Item currentItem;
+    private UndoManager undoManager;
 
     public static void main(String[] args) {
-        MainForm mainForm = new MainForm();
+        MainForm mainForm = new MainForm(args);
         mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         try {
             mainForm.statusPanel.setBorder(new TitledBorder(""));
@@ -65,60 +71,73 @@ public class MainForm extends JFrame {
         mainForm.setVisible(true);
     }
 
-    public MainForm() {
+    public MainForm(String[] args) {
         initComponents();
         HTMLEditorKit editorKit = new HTMLEditorKit();
         editorPane1.setEditorKitForContentType("text/html", editorKit);
         editorPane1.setContentType("text/html");
         editorPane1.setBackground(new Color(BACKGROUND_COLOR));
+        undoManager = new UndoManager();
         itemTree.setTransferHandler(new MyTranferHandler());
         propertiesLoader = new PropertiesLoader(fileName);
         propertiesLoader.loadFromFile();
+        if (args.length < 1)
         NetworkConnection.setServerURL(propertiesLoader.getServerAddress());
+        else {
+            try {
+                URI.create(args[0]);
+                NetworkConnection.setServerURL(args[0]);
+            } catch (IllegalArgumentException e) {
+                NetworkConnection.setServerURL(propertiesLoader.getServerAddress());
+            }
+        }
+
+
         DefaultTreeModel model = (DefaultTreeModel) itemTree.getModel();
         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) model.getRoot();
         Map<String, Long> categories = null;
 
-        try {
-            categories = NetworkConnection.getCategoryNames();
-        } catch (NetworkConnection.DataBaseError dataBaseError) {
-            dataBaseError.printStackTrace();
-        }
+        if (NetworkConnection.isServerOnline()) {
+            try {
+                categories = NetworkConnection.getCategoryNames();
+            } catch (NetworkConnection.DataBaseError dataBaseError) {
+                dataBaseError.printStackTrace();
+            }
 
-        if (categories != null) {
-            for (String s : categories.keySet()) {
-                Map<String, String> ids = NetworkConnection.getIDsByCategory(s);
-                categoryComboBox.addItem(s);
-                if (s.equals("root")) {
-                    for (String item_id : ids.keySet()) {
-                        Item item = new Item();
-                        item.set_id(item_id);
-                        item.setItemName(ids.get(item_id));
-                        item.setChanged(false);
-                        DefaultMutableTreeNode node = new DefaultMutableTreeNode(item);
-                        node.setAllowsChildren(false);
-                        treeNode.add(node);
+            if (categories != null) {
+                for (String s : categories.keySet()) {
+                    Map<String, String> ids = NetworkConnection.getIDsByCategory(s);
+                    categoryComboBox.addItem(s);
+                    if (s.equals("root")) {
+                        for (String item_id : ids.keySet()) {
+                            Item item = new Item();
+                            item.set_id(item_id);
+                            item.setItemName(ids.get(item_id));
+                            item.setChanged(false);
+                            DefaultMutableTreeNode node = new DefaultMutableTreeNode(item);
+                            node.setAllowsChildren(false);
+                            treeNode.add(node);
+                        }
+                    } else {
+                        DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(s);
+                        newChild.setAllowsChildren(true);
+                        for (String item_id : ids.keySet()) {
+                            Item item = new Item();
+                            item.set_id(item_id);
+                            item.setItemName(ids.get(item_id));
+                            item.setChanged(false);
+                            DefaultMutableTreeNode node = new DefaultMutableTreeNode(item);
+                            node.setAllowsChildren(false);
+                            newChild.add(node);
+                        }
+                        treeNode.add(newChild);
                     }
-                } else {
-                    DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(s);
-                    newChild.setAllowsChildren(true);
-                    for (String item_id : ids.keySet()) {
-                        Item item = new Item();
-                        item.set_id(item_id);
-                        item.setItemName(ids.get(item_id));
-                        item.setChanged(false);
-                        DefaultMutableTreeNode node = new DefaultMutableTreeNode(item);
-                        node.setAllowsChildren(false);
-                        newChild.add(node);
-                    }
-                    treeNode.add(newChild);
                 }
             }
-        }
-
         model.reload();
         itemTree.updateUI();
         statusLabelComponentShown(new ComponentEvent(statusLabel, 5));
+        }
     }
 
 
@@ -152,8 +171,11 @@ public class MainForm extends JFrame {
                     System.out.println("item load from server");
                 }
                 currentItem = item;
+
                 itemNameTextField.setText(item.getItemName());
+                editorPane1.setEnabled(true);
                 editorPane1.setText(item.getText());
+                editorPane1.getDocument().addUndoableEditListener(undoManager);
                 contentTab.updateUI();
                 categoryComboBox.setSelectedItem(item.getParent());
                 textQR.setText(item.get_id());
@@ -206,42 +228,6 @@ public class MainForm extends JFrame {
         cellEditor.getCellEditorValue();
         ((DefaultTableModel) attachmentTabel.getModel()).setDataVector(rows, columnIdentifiers);
         attachmentTabel.getColumnModel().getColumn(3).setCellEditor(cellEditor);
-    }
-
-    private void loadItemActionPerformed(ActionEvent e) {
-
-    }
-
-    private void pushItemActionPerformed(ActionEvent e) {
-        // TODO add your code here
-    }
-
-    private void loadTemplateActionPerformed(ActionEvent e) {
-        // TODO add your code here
-    }
-
-    private void checkSyntaxActionPerformed(ActionEvent e) {
-        // TODO add your code here
-    }
-
-    private void tabbedPane1StateChanged(ChangeEvent e) {
-        // TODO add your code here
-    }
-
-    private void showItemOnGui() {
-
-    }
-
-    private void qrPanelComponentMoved(ComponentEvent e) {
-        // TODO add your code here
-    }
-
-    private void descriptionTextAreaCaretUpdate(CaretEvent e) {
-        System.out.println(e);
-        // textPane1.setText(textArea1.getText());
-        if (currentItem != null) {
-            currentItem.setText(editorPane1.getText());
-        }
     }
 
     private void addFileButtonActionPerformed(ActionEvent e) {
@@ -311,9 +297,11 @@ public class MainForm extends JFrame {
         ArrayList<AttacheFile> attacheFiles = new ArrayList<>();
         for (int i = 0; i < attachmentTabel.getModel().getRowCount(); i++) {
             String type = (String) attachmentTabel.getModel().getValueAt(i, 3);
+
             if (type == null) {
                 break;
             }
+
             System.out.println(type);
             AttacheFile file;
             TableModel model = attachmentTabel.getModel();
@@ -426,9 +414,7 @@ public class MainForm extends JFrame {
 
     }
 
-
     private void fontMenuActionPerformed(ActionEvent e) {
-        // TODO add your code here
         //open form
         new Font(this).setVisible(true);
         //set new style from form
@@ -459,11 +445,9 @@ public class MainForm extends JFrame {
         editorPane1.setText(editorPane1.getText());
     }
 
-
     private void aligmentActionPerformed(ActionEvent e) {
-        //not working yet
         HTML.Tag tag = HTML.Tag.DIV;
-        int start = editorPane1.getSelectionStart(), end = editorPane1.getSelectionEnd();
+        int start = editorPane1.getSelectionStart();
         String string = editorPane1.getSelectedText();
         if (string == null) {
             string = "";
@@ -488,14 +472,15 @@ public class MainForm extends JFrame {
 
     }
 
-
     private void exitMenuItemActionPerformed(ActionEvent e) {
         //TODO add dialog "Вы действительно хотите выйти?"
-        dispose();
+        JOptionPane.showConfirmDialog(this, "Вы действительно хотие выйти?", "Вы действительно хотие выйти?", JOptionPane.OK_CANCEL_OPTION, EXIT_ON_CLOSE);
+        //dispose();
+
     }
 
     private void aboutMenuActionPerformed(ActionEvent e) {
-        // TODO add your code here
+        // TODO add new window about program
     }
 
     private void qrPanelMouseClicked(MouseEvent e) {
@@ -546,19 +531,18 @@ public class MainForm extends JFrame {
     }
 
     private void editorPane1PropertyChange(PropertyChangeEvent e) {
+        System.out.println("PropertyChange");
+
         currentItem.setText(editorPane1.getText());
     }
 
     private void editorPane1CaretUpdate(CaretEvent e) {
-//        String text = editorPane1.getText();
-//        // TODO Add H attributes. but how?
-//        int fromIndex=0;
-//        while (fromIndex<text.lastIndexOf("<font "))
-//        text.indexOf("<font ",fromIndex);
-        currentItem.setText(editorPane1.getText().replace("\r", " "));
-        currentItem.setText(editorPane1.getText().replace("\n", " "));
-        currentItem.setText(editorPane1.getText().replace("\n \n", " "));
-        System.out.println("editorPane1 = " + editorPane1.getText());
+        if (editorPane1.isEnabled() && currentItem != null) {
+            currentItem.setText(editorPane1.getText().replace("\r", " "));
+            currentItem.setText(editorPane1.getText().replace("\n", " "));
+            currentItem.setText(editorPane1.getText().replace("\n \n", " "));
+        }
+        System.out.println("CaretUpdate");
     }
 
     private void addCategoryItemMenuActionPerformed(ActionEvent e) {
@@ -593,18 +577,6 @@ public class MainForm extends JFrame {
 
     }
 
-    private void delCurrentItemActionPerformed(ActionEvent e) {
-        // TODO add your code here
-    }
-
-    private void reloadItemsActionPerformed(ActionEvent e) {
-        // TODO add your code here
-    }
-
-    private void printVIPCodesActionPerformed(ActionEvent e) {
-        // TODO add your code here
-    }
-
     private void copyQRButtonActionPerformed(ActionEvent e) {
         StringSelection contents = new StringSelection(currentItem.get_id());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(contents, contents);
@@ -620,12 +592,59 @@ public class MainForm extends JFrame {
 
     private void editorPane1KeyReleased(KeyEvent e) {
         //if backspace or delete is pressed - delete empty tags.
+
+        System.out.println(e.getKeyCode());
+
         if (e.getKeyCode() == 8 || e.getKeyCode() == 46) {
-            editorPane1.setText(currentItem.getText());
+            // editorPane1.setText(currentItem.getText());
             editorPane1.revalidate();
+            System.out.println("delete");
         }
+
+        editorPane1.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                System.out.println("insertUpdate" + e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                System.out.println("removeUpdate" + e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                System.out.println("changedUpdate" + e);
+            }
+        });
+        if (e.isControlDown() && e.getKeyCode() == 90 && undoManager.canUndo()) {
+            System.out.println("undo");
+            undoManager.undo();
+
+            //editorPane1.setText(stateStack.pop());
+        } //else {
+//
+//                boolean enabled = editorPane1.isEnabled();
+//                int length = editorPane1.getText().length();
+//                if (enabled && (empty || length != stateStack.peek().length())){
+//                    System.out.println("push");
+//                    stateStack.push(editorPane1.getText());
+//                }
+//            }
+
     }
 
+    private void button4ActionPerformed(ActionEvent e) {
+        if (undoManager.canUndo()) {
+            System.out.println("before:\n" + editorPane1.getText().hashCode());
+            int length = editorPane1.toString().length();
+            while (editorPane1.toString().length() == length) {
+                undoManager.undo();
+                System.out.println("undo");
+            }
+        }
+        System.out.println("after\n" + editorPane1.getText().hashCode());
+    }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -668,6 +687,7 @@ public class MainForm extends JFrame {
         button3 = new JButton();
         button1 = new JButton();
         button2 = new JButton();
+        button4 = new JButton();
         scrollPane1 = new JScrollPane();
         editorPane1 = new JEditorPane();
         attachPanel = new JPanel();
@@ -1045,6 +1065,16 @@ public class MainForm extends JFrame {
                                 }
                             });
                             toolBar1.add(button2);
+
+                            //---- button4 ----
+                            button4.setText("\u041e\u0442\u043c\u0435\u043d\u0430 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f");
+                            button4.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    button4ActionPerformed(e);
+                                }
+                            });
+                            toolBar1.add(button4);
                         }
                         itemPanel.add(toolBar1);
 
@@ -1059,6 +1089,7 @@ public class MainForm extends JFrame {
                             editorPane1.setDoubleBuffered(true);
                             editorPane1.setDragEnabled(true);
                             editorPane1.setDropMode(DropMode.INSERT);
+                            editorPane1.setEnabled(false);
                             editorPane1.addPropertyChangeListener("text", new PropertyChangeListener() {
                                 @Override
                                 public void propertyChange(PropertyChangeEvent e) {
@@ -1207,6 +1238,7 @@ public class MainForm extends JFrame {
     private JButton button3;
     private JButton button1;
     private JButton button2;
+    private JButton button4;
     private JScrollPane scrollPane1;
     private JEditorPane editorPane1;
     private JPanel attachPanel;
