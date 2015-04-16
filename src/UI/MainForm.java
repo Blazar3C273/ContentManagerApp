@@ -17,7 +17,10 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
@@ -28,7 +31,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
-import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
@@ -58,7 +60,8 @@ public class MainForm extends JFrame {
     PropertiesLoader propertiesLoader;
 
     Item currentItem;
-    private UndoManager undoManager;
+    private MyUndoManager undoManager;
+
 
     public static void main(String[] args) {
         MainForm mainForm = new MainForm(args);
@@ -77,7 +80,7 @@ public class MainForm extends JFrame {
         editorPane1.setEditorKitForContentType("text/html", editorKit);
         editorPane1.setContentType("text/html");
         editorPane1.setBackground(new Color(BACKGROUND_COLOR));
-        undoManager = new UndoManager();
+
         itemTree.setTransferHandler(new MyTranferHandler());
         propertiesLoader = new PropertiesLoader(fileName);
         propertiesLoader.loadFromFile();
@@ -171,10 +174,10 @@ public class MainForm extends JFrame {
                     System.out.println("item load from server");
                 }
                 currentItem = item;
-
                 itemNameTextField.setText(item.getItemName());
                 editorPane1.setEnabled(true);
                 editorPane1.setText(item.getText());
+                undoManager = new MyUndoManager();
                 editorPane1.getDocument().addUndoableEditListener(undoManager);
                 contentTab.updateUI();
                 categoryComboBox.setSelectedItem(item.getParent());
@@ -531,8 +534,6 @@ public class MainForm extends JFrame {
     }
 
     private void editorPane1PropertyChange(PropertyChangeEvent e) {
-        System.out.println("PropertyChange");
-
         currentItem.setText(editorPane1.getText());
     }
 
@@ -542,7 +543,7 @@ public class MainForm extends JFrame {
             currentItem.setText(editorPane1.getText().replace("\n", " "));
             currentItem.setText(editorPane1.getText().replace("\n \n", " "));
         }
-        System.out.println("CaretUpdate");
+        // System.out.println("CaretUpdate");
     }
 
     private void addCategoryItemMenuActionPerformed(ActionEvent e) {
@@ -593,57 +594,20 @@ public class MainForm extends JFrame {
     private void editorPane1KeyReleased(KeyEvent e) {
         //if backspace or delete is pressed - delete empty tags.
 
-        System.out.println(e.getKeyCode());
-
         if (e.getKeyCode() == 8 || e.getKeyCode() == 46) {
-            // editorPane1.setText(currentItem.getText());
-            editorPane1.revalidate();
-            System.out.println("delete");
+            currentItem.setText(editorPane1.getText());
+            editorPane1.setText(currentItem.getText());
         }
 
-        editorPane1.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                System.out.println("insertUpdate" + e);
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                System.out.println("removeUpdate" + e);
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                System.out.println("changedUpdate" + e);
-            }
-        });
-        if (e.isControlDown() && e.getKeyCode() == 90 && undoManager.canUndo()) {
-            System.out.println("undo");
+        if (e.getKeyCode() == KeyEvent.VK_Z && e.isControlDown() && undoManager.canUndo())
             undoManager.undo();
 
-            //editorPane1.setText(stateStack.pop());
-        } //else {
-//
-//                boolean enabled = editorPane1.isEnabled();
-//                int length = editorPane1.getText().length();
-//                if (enabled && (empty || length != stateStack.peek().length())){
-//                    System.out.println("push");
-//                    stateStack.push(editorPane1.getText());
-//                }
-//            }
 
     }
 
     private void button4ActionPerformed(ActionEvent e) {
-        if (undoManager.canUndo()) {
-            System.out.println("before:\n" + editorPane1.getText().hashCode());
-            int length = editorPane1.toString().length();
-            while (editorPane1.toString().length() == length) {
-                undoManager.undo();
-                System.out.println("undo");
-            }
-        }
-        System.out.println("after\n" + editorPane1.getText().hashCode());
+        if (undoManager.canUndo())
+            undoManager.undo();
     }
 
     private void initComponents() {
@@ -660,7 +624,6 @@ public class MainForm extends JFrame {
         addCategoryItemMenu = new JMenuItem();
         exitMenuItem = new JMenuItem();
         feedbackMenu = new JMenu();
-        menuItem1 = new JMenuItem();
         aboutMenu = new JMenu();
         mainPanel = new JPanel();
         itemTreePanel = new JPanel();
@@ -815,10 +778,6 @@ public class MainForm extends JFrame {
                             feedbackMenuMousePressed(e);
                         }
                     });
-
-                    //---- menuItem1 ----
-                    menuItem1.setText("\u041e\u0442\u043a\u0440\u044b\u0442\u044c ");
-                    feedbackMenu.add(menuItem1);
                 }
                 menuBar.add(feedbackMenu);
 
@@ -1211,7 +1170,6 @@ public class MainForm extends JFrame {
     private JMenuItem addCategoryItemMenu;
     private JMenuItem exitMenuItem;
     private JMenu feedbackMenu;
-    private JMenuItem menuItem1;
     private JMenu aboutMenu;
     private JPanel mainPanel;
     private JPanel itemTreePanel;
