@@ -1,0 +1,50 @@
+JFDML JFormDesigner: "5.2.1.0.138" Java: "1.8.0_25" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+			name: "this"
+			"minimumSize": new java.awt.Dimension( 850, 630 )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane1"
+				"maximumSize": new java.awt.Dimension( 200, 32767 )
+				"border": new javax.swing.border.TitledBorder( null, "Список отзывов", 4, 0, null, sfield java.awt.Color black )
+				add( new FormComponent( "javax.swing.JList" ) {
+					name: "list1"
+					"maximumSize": new java.awt.Dimension( 250, 300 )
+					"visibleRowCount": 10
+					"selectionMode": 0
+					"minimumSize": new java.awt.Dimension( 250, 300 )
+					"preferredSize": new java.awt.Dimension( 250, 160 )
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "panel1"
+				"border": new javax.swing.border.TitledBorder( "Отзыв" )
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "scrollPane2"
+					"preferredSize": new java.awt.Dimension( 8, 150 )
+					add( new FormComponent( "javax.swing.JTextPane" ) {
+						name: "textPane1"
+						"border": new javax.swing.border.TitledBorder( "Текст отзыва" )
+						"text": "Выберите отзыв"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox1"
+					"text": "Отзыв просмотрен?"
+					"componentOrientation": sfield java.awt.ComponentOrientation LEFT_TO_RIGHT
+					"horizontalTextPosition": 10
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "South"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 855, 620 )
+		} )
+	}
+}

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_contentmanagerapp" default="compile.module.contentmanagerapp">
+  <dirname property="module.contentmanagerapp.basedir" file="${ant.file.module_contentmanagerapp}"/>
+  
+  <property name="module.jdk.home.contentmanagerapp" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.contentmanagerapp" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.contentmanagerapp" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.contentmanagerapp" value="-encoding UTF-8 -source 1.7 ${compiler.args}"/>
+  
+  <property name="contentmanagerapp.output.dir" value="${module.contentmanagerapp.basedir}/ContentManagerApp/ContentManagerApp/out/production/ContentManagerApp"/>
+  <property name="contentmanagerapp.testoutput.dir" value="${module.contentmanagerapp.basedir}/ContentManagerApp/ContentManagerApp/out/test/ContentManagerApp"/>
+  
+  <path id="contentmanagerapp.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="contentmanagerapp.module.production.classpath">
+    <path refid="${module.jdk.classpath.contentmanagerapp}"/>
+    <path refid="library.com.googlecode.json-simple:json-simple:1.1.classpath"/>
+    <path refid="library.tablelayout.classpath"/>
+    <path refid="library.org.mockito:mockito-core:1.10.8.classpath"/>
+    <path refid="library.com.google.code.gson:gson:2.3.1.classpath"/>
+    <pathelement location="${basedir}/lib/commons-codec-1.6.jar"/>
+    <pathelement location="${basedir}/lib/commons-logging-1.1.3.jar"/>
+    <pathelement location="${basedir}/lib/fluent-hc-4.3.6.jar"/>
+    <pathelement location="${basedir}/lib/hamcrest-core-1.1.jar"/>
+    <pathelement location="${basedir}/lib/httpclient-4.3.6.jar"/>
+    <pathelement location="${basedir}/lib/httpclient-cache-4.3.6.jar"/>
+    <pathelement location="${basedir}/lib/httpcore-4.3.3.jar"/>
+    <pathelement location="${basedir}/lib/httpmime-4.3.6.jar"/>
+    <path refid="library.net.glxn:qrgen:1.4.classpath"/>
+    <path refid="library.com.fifesoft:rsyntaxtextarea:2.5.4.classpath"/>
+    <path refid="library.metaphaseeditor.classpath"/>
+    <path refid="library.shef.classpath"/>
+  </path>
+  
+  <path id="contentmanagerapp.runtime.production.module.classpath">
+    <pathelement location="${contentmanagerapp.output.dir}"/>
+    <path refid="library.com.googlecode.json-simple:json-simple:1.1.classpath"/>
+    <path refid="library.tablelayout.classpath"/>
+    <path refid="library.org.mockito:mockito-core:1.10.8.classpath"/>
+    <path refid="library.com.google.code.gson:gson:2.3.1.classpath"/>
+    <pathelement location="${basedir}/lib/commons-codec-1.6.jar"/>
+    <pathelement location="${basedir}/lib/commons-logging-1.1.3.jar"/>
+    <pathelement location="${basedir}/lib/fluent-hc-4.3.6.jar"/>
+    <pathelement location="${basedir}/lib/hamcrest-core-1.1.jar"/>
+    <pathelement location="${basedir}/lib/httpclient-4.3.6.jar"/>
+    <pathelement location="${basedir}/lib/httpclient-cache-4.3.6.jar"/>
+    <pathelement location="${basedir}/lib/httpcore-4.3.3.jar"/>
+    <pathelement location="${basedir}/lib/httpmime-4.3.6.jar"/>
+    <path refid="library.net.glxn:qrgen:1.4.classpath"/>
+    <path refid="library.com.fifesoft:rsyntaxtextarea:2.5.4.classpath"/>
+    <path refid="library.metaphaseeditor.classpath"/>
+    <path refid="library.shef.classpath"/>
+  </path>
+  
+  <path id="contentmanagerapp.module.classpath">
+    <path refid="${module.jdk.classpath.contentmanagerapp}"/>
+    <pathelement location="${contentmanagerapp.output.dir}"/>
+    <path refid="library.com.googlecode.json-simple:json-simple:1.1.classpath"/>
+    <pathelement location="${idea.home}/lib/hamcrest-core-1.3.jar"/>
+    <pathelement location="${idea.home}/lib/hamcrest-library-1.3.jar"/>
+    <pathelement location="${idea.home}/lib/junit-4.11.jar"/>
+    <path refid="library.tablelayout.classpath"/>
+    <path refid="library.org.mockito:mockito-core:1.10.8.classpath"/>
+    <path refid="library.com.google.code.gson:gson:2.3.1.classpath"/>
+    <pathelement location="${basedir}/lib/commons-codec-1.6.jar"/>
+    <pathelement location="${basedir}/lib/commons-logging-1.1.3.jar"/>
+    <pathelement location="${basedir}/lib/fluent-hc-4.3.6.jar"/>
+    <pathelement location="${basedir}/lib/hamcrest-core-1.1.jar"/>
+    <pathelement location="${basedir}/lib/httpclient-4.3.6.jar"/>
+    <pathelement location="${basedir}/lib/httpclient-cache-4.3.6.jar"/>
+    <pathelement location="${basedir}/lib/httpcore-4.3.3.jar"/>
+    <pathelement location="${basedir}/lib/httpmime-4.3.6.jar"/>
+    <path refid="library.net.glxn:qrgen:1.4.classpath"/>
+    <path refid="library.com.fifesoft:rsyntaxtextarea:2.5.4.classpath"/>
+    <path refid="library.metaphaseeditor.classpath"/>
+    <path refid="library.shef.classpath"/>
+  </path>
+  
+  <path id="contentmanagerapp.runtime.module.classpath">
+    <pathelement location="${contentmanagerapp.testoutput.dir}"/>
+    <pathelement location="${contentmanagerapp.output.dir}"/>
+    <path refid="library.com.googlecode.json-simple:json-simple:1.1.classpath"/>
+    <pathelement location="${idea.home}/lib/hamcrest-core-1.3.jar"/>
+    <pathelement location="${idea.home}/lib/hamcrest-library-1.3.jar"/>
+    <pathelement location="${idea.home}/lib/junit-4.11.jar"/>
+    <path refid="library.tablelayout.classpath"/>
+    <path refid="library.org.mockito:mockito-core:1.10.8.classpath"/>
+    <path refid="library.com.google.code.gson:gson:2.3.1.classpath"/>
+    <pathelement location="${basedir}/lib/commons-codec-1.6.jar"/>
+    <pathelement location="${basedir}/lib/commons-logging-1.1.3.jar"/>
+    <pathelement location="${basedir}/lib/fluent-hc-4.3.6.jar"/>
+    <pathelement location="${basedir}/lib/hamcrest-core-1.1.jar"/>
+    <pathelement location="${basedir}/lib/httpclient-4.3.6.jar"/>
+    <pathelement location="${basedir}/lib/httpclient-cache-4.3.6.jar"/>
+    <pathelement location="${basedir}/lib/httpcore-4.3.3.jar"/>
+    <pathelement location="${basedir}/lib/httpmime-4.3.6.jar"/>
+    <path refid="library.net.glxn:qrgen:1.4.classpath"/>
+    <path refid="library.com.fifesoft:rsyntaxtextarea:2.5.4.classpath"/>
+    <path refid="library.metaphaseeditor.classpath"/>
+    <path refid="library.shef.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.contentmanagerapp">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.contentmanagerapp">
+    <patternset refid="excluded.from.module.contentmanagerapp"/>
+  </patternset>
+  
+  <path id="contentmanagerapp.module.sourcepath">
+    <dirset dir="${module.contentmanagerapp.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="contentmanagerapp.module.test.sourcepath">
+    <dirset dir="${module.contentmanagerapp.basedir}">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.contentmanagerapp" depends="compile.module.contentmanagerapp.production,compile.module.contentmanagerapp.tests" description="Compile module ContentManagerApp"/>
+  
+  <target name="compile.module.contentmanagerapp.production" depends="register.custom.compilers" description="Compile module ContentManagerApp; production classes">
+    <mkdir dir="${contentmanagerapp.output.dir}"/>
+    <javac2 destdir="${contentmanagerapp.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.contentmanagerapp}/javac">
+      <compilerarg line="${compiler.args.contentmanagerapp}"/>
+      <bootclasspath refid="contentmanagerapp.module.bootclasspath"/>
+      <classpath refid="contentmanagerapp.module.production.classpath"/>
+      <src refid="contentmanagerapp.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.contentmanagerapp"/>
+    </javac2>
+    
+    <copy todir="${contentmanagerapp.output.dir}">
+      <fileset dir="${module.contentmanagerapp.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.contentmanagerapp.tests" depends="register.custom.compilers,compile.module.contentmanagerapp.production" description="compile module ContentManagerApp; test classes" unless="skip.tests">
+    <mkdir dir="${contentmanagerapp.testoutput.dir}"/>
+    <javac2 destdir="${contentmanagerapp.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.contentmanagerapp}/javac">
+      <compilerarg line="${compiler.args.contentmanagerapp}"/>
+      <bootclasspath refid="contentmanagerapp.module.bootclasspath"/>
+      <classpath refid="contentmanagerapp.module.classpath"/>
+      <src refid="contentmanagerapp.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.contentmanagerapp"/>
+    </javac2>
+    
+    <copy todir="${contentmanagerapp.testoutput.dir}">
+      <fileset dir="${module.contentmanagerapp.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.contentmanagerapp" description="cleanup module">
+    <delete dir="${contentmanagerapp.output.dir}"/>
+    <delete dir="${contentmanagerapp.testoutput.dir}"/>
+  </target>
+</project>

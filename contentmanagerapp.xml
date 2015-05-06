@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="contentmanagerapp" default="all">
+  
+  
+  <property file="contentmanagerapp.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.pyc/**"/>
+    <exclude name="**/.pyo/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/*.lib/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/*.rbc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.zip"/>
+    <include name="*.apk"/>
+    <include name="*.war"/>
+    <include name="*.egg"/>
+    <include name="*.ear"/>
+    <include name="*.ane"/>
+    <include name="*.swc"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
+  <path id="jdk.classpath.1.8">
+    <fileset dir="${jdk.home.1.8}">
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/jfr.jar"/>
+      <include name="jre/lib/jfxswt.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="jre/lib/ext/access-bridge-64.jar"/>
+      <include name="jre/lib/ext/cldrdata.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/jaccess.jar"/>
+      <include name="jre/lib/ext/jfxrt.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/nashorn.jar"/>
+      <include name="jre/lib/ext/sunec.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunmscapi.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+      <include name="jre/lib/ext/zipfs.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.8}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.com.fifesoft:rsyntaxtextarea:2.5.4.classpath">
+    <pathelement location="${basedir}/lib/rsyntaxtextarea-2.5.4.jar"/>
+  </path>
+  
+  <path id="library.com.google.code.gson:gson:2.3.1.classpath">
+    <pathelement location="${basedir}/lib/gson-2.3.1.jar"/>
+  </path>
+  
+  <path id="library.com.googlecode.json-simple:json-simple:1.1.classpath">
+    <pathelement location="${basedir}/lib/json-simple-1.1.jar"/>
+  </path>
+  
+  <path id="library.metaphaseeditor.classpath">
+    <pathelement location="${basedir}/../../../../Downloads/MetaphaseEditor-1.1.0/MetaphaseEditor.jar"/>
+  </path>
+  
+  <path id="library.net.glxn:qrgen:1.4.classpath">
+    <pathelement location="${basedir}/lib/core-3.0.0.jar"/>
+    <pathelement location="${basedir}/lib/javase-3.0.0.jar"/>
+    <pathelement location="${basedir}/lib/qrgen-1.4.jar"/>
+  </path>
+  
+  <path id="library.org.mockito:mockito-core:1.10.8.classpath">
+    <pathelement location="${basedir}/lib/hamcrest-core-1.1.jar"/>
+    <pathelement location="${basedir}/lib/mockito-core-1.10.8.jar"/>
+    <pathelement location="${basedir}/lib/objenesis-2.1.jar"/>
+  </path>
+  
+  <path id="library.shef.classpath">
+    <pathelement location="${basedir}/../../../../Downloads/SHEF-bin-2009-05-12/dist/SHEF.jar"/>
+  </path>
+  
+  <path id="library.tablelayout.classpath">
+    <pathelement location="${basedir}/lib/TableLayout.jar"/>
+  </path>
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/jdom.jar"/>
+    <pathelement location="${javac2.home}/asm-all.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  <import file="${basedir}/module_contentmanagerapp.xml"/>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.contentmanagerapp" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.contentmanagerapp" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.contentmanagerapp:jar" value="${basedir}/out/artifacts/ContentManagerApp_jar"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.ContentManagerApp.jar" value="${artifacts.temp.dir}/ContentManagerApp.jar"/>
+  </target>
+  
+  <target name="artifact.contentmanagerapp:jar" depends="init.artifacts, compile.module.contentmanagerapp, compile.module.contentmanagerapp" description="Build &#39;ContentManagerApp:jar&#39; artifact">
+    <property name="artifact.temp.output.contentmanagerapp:jar" value="${artifacts.temp.dir}/ContentManagerApp_jar"/>
+    <mkdir dir="${artifact.temp.output.contentmanagerapp:jar}"/>
+    <jar destfile="${temp.jar.path.ContentManagerApp.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${contentmanagerapp.output.dir}"/>
+      <zipfileset dir="${contentmanagerapp.testoutput.dir}"/>
+      <zipfileset src="${basedir}/../../../../Downloads/MetaphaseEditor-1.1.0/MetaphaseEditor.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/gson-2.3.1.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/mockito-core-1.10.8.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/hamcrest-core-1.1.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/objenesis-2.1.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/qrgen-1.4.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/javase-3.0.0.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/core-3.0.0.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/TableLayout.jar"/>
+      <zipfileset src="${basedir}/../../../../Downloads/SHEF-bin-2009-05-12/dist/SHEF.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/httpclient-4.3.6.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/httpclient-cache-4.3.6.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/commons-logging-1.1.3.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/commons-codec-1.6.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/fluent-hc-4.3.6.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/httpcore-4.3.3.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/httpmime-4.3.6.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/json-simple-1.1.jar"/>
+      <zipfileset src="${idea.home}/lib/junit-4.11.jar"/>
+      <zipfileset src="${idea.home}/lib/hamcrest-core-1.3.jar"/>
+      <zipfileset src="${idea.home}/lib/hamcrest-library-1.3.jar"/>
+      <zipfileset src="${basedir}/ContentManagerApp/ContentManagerApp/lib/rsyntaxtextarea-2.5.4.jar"/>
+    </jar>
+    <copy file="${temp.jar.path.ContentManagerApp.jar}" tofile="${artifact.temp.output.contentmanagerapp:jar}/ContentManagerApp.jar"/>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.contentmanagerapp:jar" description="Build all artifacts">
+    <mkdir dir="${artifact.output.contentmanagerapp:jar}"/>
+    <copy todir="${artifact.output.contentmanagerapp:jar}">
+      <fileset dir="${artifact.temp.output.contentmanagerapp:jar}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>
